@@ -1,0 +1,21 @@
+{
+  "name": "Sahay",
+  "short_name": "Sahay",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#e0c3fc",
+  "theme_color": "#764ba2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
