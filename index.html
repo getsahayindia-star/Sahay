@@ -193,15 +193,16 @@
         <!-- VIEW: Home (Role Selection) -->
         <div id="view-home" class="w-full flex flex-col gap-6 fade-in hidden">
             
-            <div class="glass-panel p-4 flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-gray-500" id="txt-welcome">Welcome,</p>
-                    <h3 id="user-display-name" class="font-bold text-lg text-gray-800">User</h3>
-                </div>
-                <button onclick="logout()" class="text-red-400 hover:text-red-600">
-                    <i class="fa-solid fa-right-from-bracket text-xl"></i>
-                </button>
-            </div>
+       <div class="glass-panel p-4 flex justify-between items-center mb-4">
+    <div>
+        <p class="text-xs text-gray-500" id="txt-welcome">Welcome,</p>
+        <h3 id="user-display-name" class="font-bold text-lg text-gray-800">User</h3>
+    </div>
+    <a href="profile.html" class="bg-white/80 p-3 rounded-full text-purple-600 shadow-sm hover:scale-110 transition-transform border border-purple-100">
+        <i class="fa-solid fa-user-circle text-2xl"></i>
+    </a>
+</div>
+
 
             <!-- WORKER BUTTON -->
             <button onclick="goToWorkerForm()" class="glass-panel p-8 flex flex-col items-center justify-center gap-4 transition-transform active:scale-95 group">
@@ -336,8 +337,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
+        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    
         // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyDCwCbwWE04uOvMtI-4mrrQutnM65Fgxa4",
@@ -598,9 +599,10 @@
                                 ${data.job}
                             </div>
                         </div>
-                        <a href="tel:${data.phone}" class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform hover:bg-green-600">
-                            <i class="fa-solid fa-phone"></i>
-                        </a>
+                        // This replaces the old call button line
+<a href="tel:${data.phone}" onclick="trackCall('${doc.id}')" class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform hover:bg-green-600">
+    <i class="fa-solid fa-phone"></i>
+</a>
                     `;
                     container.appendChild(card);
                 });
@@ -672,6 +674,20 @@
         });
     });
   }
+        // --- NEW: TRACKING LOGIC ---
+window.trackCall = async (docId) => {
+    try {
+        // This tells Firebase: "Find this worker and add +1 to their calls"
+        const workerRef = doc(db, "workers", docId);
+        await updateDoc(workerRef, {
+            calls: increment(1)
+        });
+        console.log("Call tracked!");
+    } catch (error) {
+        console.error("Tracking error:", error);
+    }
+};
+        
     </script>
     
 </body>
