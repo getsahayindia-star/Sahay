@@ -273,14 +273,17 @@
         import { getFirestore, collection, query, where, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
         // REPLACE WITH YOUR FIREBASE CONFIG
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDCwCbwWE04uOvMtI-4mrrQutnM65Fgxa4",
+  authDomain: "sahay-f4c45.firebaseapp.com",
+  databaseURL: "https://sahay-f4c45-default-rtdb.firebaseio.com",
+  projectId: "sahay-f4c45",
+  storageBucket: "sahay-f4c45.firebasestorage.app",
+  messagingSenderId: "215909233174",
+  appId: "1:215909233174:web:97e49dfb8481fe952ebb37",
+  measurementId: "G-SG38X1JRF9"
+};
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -288,10 +291,27 @@
 
         let currentUser = null;
 
-        // --- 1. AUTH CHECK ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
+        // --- 1. AUTH CHECK (SAFER VERSION) ---
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        console.log("User is logged in:", user.uid);
+        currentUser = user;
+        
+        // Update UI with user info
+        const displayName = user.displayName || "User";
+        document.getElementById('userNameInput').value = user.displayName || "";
+        document.getElementById('displayHeaderName').innerText = displayName;
+        
+        // Load the worker profiles
+        loadWorkerProfiles(user.uid);
+    } else {
+        console.log("No user found. Redirecting...");
+        // OPTIONAL: Add a small delay or check so it doesn't bounce instantly
+        // But for now, let's keep it simple.
+        window.location.href = "index.html"; 
+    }
+});
+        
                 // Fill Inputs
                 const displayName = user.displayName || "User";
                 document.getElementById('userNameInput').value = user.displayName || "";
