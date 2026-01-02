@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Sahay</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Consistent Gradient with your main app */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: var(--text-color);
+            padding-bottom: 80px; 
+        }
+
+        /* --- Header --- */
+        .header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        h1 { font-size: 1.5rem; font-weight: 600; }
+
+        /* --- Container --- */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Glass Cards --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--glass-shadow);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* --- Profile Edit Section --- */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 5px;
+        }
+
+        .action-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        .action-btn.danger { background: rgba(255, 82, 82, 0.4); color: #ffebee; }
+        .action-btn.save { background: rgba(76, 175, 80, 0.4); }
+
+        /* --- Worker Stats Cards --- */
+        .section-title {
+            margin: 25px 0 15px;
+            font-size: 1.2rem;
+            border-left: 4px solid #fff;
+            padding-left: 10px;
+        }
+
+        .worker-card {
+            position: relative;
+        }
+
+        .worker-role {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .worker-location {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* --- Loading & Toast --- */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+        }
+
+        #toast-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: none;
+            z-index: 200;
+            white-space: nowrap;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <button class="back-btn" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
+        <h1>My Profile</h1>
+        <div style="width: 24px;"></div> 
+    </div>
+
+    <div class="container">
+        
+        <!-- 1. Main User Profile (Name Edit) -->
+        <div class="glass-card">
+            <div class="profile-header">
+                <div class="avatar-circle">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 id="displayHeaderName">User</h3>
+            </div>
+            
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="userNameInput" class="glass-input" placeholder="Enter your name">
+            </div>
+            
+            <div class="input-group">
+                <label>Phone / Email</label>
+                <input type="text" id="userContactDisplay" class="glass-input" disabled style="opacity: 0.6;">
+            </div>
+
+            <button class="action-btn save" onclick="updateUserName()">Update Name</button>
+            <button class="action-btn danger" style="margin-top: 10px;" onclick="handleLogout()">Logout</button>
+        </div>
+
+        <!-- 2. My Worker Services (Insights & Management) -->
+        <h2 class="section-title">My Worker Profiles</h2>
+        <div id="workerList">
+            <div class="loading">Loading your services...</div>
+        </div>
+
+    </div>
+
+    <div id="toast-box">Action Successful</div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import libraries (Update version numbers if needed, 11.1.0 is used here)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+        // REPLACE WITH YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // --- 1. AUTH CHECK ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                // Fill Inputs
+                const displayName = user.displayName || "User";
+                document.getElementById('userNameInput').value = user.displayName || "";
+                document.getElementById('displayHeaderName').innerText = displayName;
+                document.getElementById('userContactDisplay').value = user.phoneNumber || user.email || "No contact info";
+                
+                // Load Worker Posts
+                loadWorkerProfiles(user.uid);
+            } else {
+                // Redirect if not logged in
+                window.location.href = "index.html"; 
+            }
+        });
+
+        // --- 2. LOAD WORKER PROFILES ---
+        async function loadWorkerProfiles(uid) {
+            const listContainer = document.getElementById('workerList');
+            listContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Checking database...</div>';
+
+            try {
+                // CRITICAL: We use 'uid' here because your Rules expect 'uid'
+                const q = query(collection(db, "workers"), where("uid", "==", uid));
+                const querySnapshot = await getDocs(q);
+
+                listContainer.innerHTML = ""; 
+
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = `
+                        <div class="glass-card" style="text-align:center; opacity:0.8;">
+                            <p>You haven't listed any work profiles yet.</p>
+                            <button class="action-btn" onclick="window.location.href='index.html'">Create One Now</button>
+                        </div>`;
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const docId = docSnap.id;
+                    
+                    // Handle missing stats for old profiles
+                    const views = data.views || 0;
+                    const calls = data.calls || 0;
+
+                    const html = `
+                        <div class="glass-card worker-card" id="card-${docId}">
+                            <div class="worker-role">${data.profession}</div>
+                            <div class="worker-location"><i class="fas fa-map-marker-alt"></i> ${data.location}</div>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <span class="stat-number" style="color: #64ffda;">${views}</span>
+                                    <span class="stat-label">Profile Views</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-number" style="color: #ff8a80;">${calls}</span>
+                                    <span class="stat-label">Calls</span>
+                                </div>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="action-btn danger" onclick="deleteService('${docId}')">Delete Profile</button>
+                            </div>
+                        </div>
+                    `;
+                    listContainer.innerHTML += html;
+                });
+
+            } catch (error) {
+                console.error("Error loading profiles:", error);
+                listContainer.innerHTML = `<p style="color:white; text-align:center;">Error loading. Check console.</p>`;
+            }
+        }
+
+        // --- 3. UPDATE NAME ---
+        window.updateUserName = async () => {
+            const newName = document.getElementById('userNameInput').value;
+            if(!newName) return showToast("Name cannot be empty");
+
+            try {
+                await updateProfile(auth.currentUser, { displayName: newName });
+                document.getElementById('displayHeaderName').innerText = newName;
+                showToast("Name updated!");
+            } catch (error) {
+                console.error(error);
+                showToast("Update failed");
+            }
+        };
+
+        // --- 4. DELETE SERVICE ---
+        window.deleteService = async (docId) => {
+            if(!confirm("Are you sure? This will remove your worker profile from the search list.")) return;
+
+            try {
+                // This only works if the document 'uid' matches your auth uid (Per your Rules)
+                await deleteDoc(doc(db, "workers", docId));
+                
+                const card = document.getElementById(`card-${docId}`);
+                if(card) card.remove();
+                
+                showToast("Profile Deleted");
+            } catch (error) {
+                console.error("Delete failed:", error);
+                showToast("Delete failed. Permission denied.");
+            }
+        };
+
+        // --- 5. LOGOUT & NAVIGATION ---
+        window.handleLogout = () => {
+            signOut(auth).then(() => window.location.href = "index.html");
+        };
+
+        window.goHome = () => {
+            window.location.href = "index.html";
+        };
+
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            box.innerText = msg;
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 3000);
+        }
+
+        // Expose to HTML
+        window.deleteService = deleteService;
+        window.updateUserName = updateUserName;
+    </script>
+</body>
+</html>
+
+
